@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Name — Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --bg:       #f8f8f6;
+      --surface:  #ffffff;
+      --ink:      #1a1a2e;
+      --muted:    #6b7280;
+      --accent:   #3d6be4;
+      --rule:     #e5e5e0;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,248,246,0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-name {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 80px 2rem 4rem;
+    }
+
+    canvas#particles {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.4rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-bio {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.4rem;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #2d58cc; }
+
+    .btn-ghost {
+      border: 1px solid var(--rule);
+      color: var(--ink);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Sections ── */
+    section {
+      padding: 6rem 2rem;
+      max-width: 740px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    h2 {
+      font-size: 1.9rem;
+      font-weight: 300;
+      letter-spacing: -0.015em;
+      margin-bottom: 2rem;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin-bottom: 2.8rem;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .about-text p + p { margin-top: 1rem; }
+    .about-text p { color: #374151; }
+
+    .about-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .avatar-placeholder {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dde8ff 0%, #c7d7f8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .info-list { list-style: none; }
+    .info-list li {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      gap: 0.5rem;
+    }
+    .info-list li span:first-child {
+      font-family: var(--mono);
+      color: var(--accent);
+      min-width: 14px;
+    }
+
+    /* ── Research ── */
+    .research-list { display: flex; flex-direction: column; gap: 2rem; }
+
+    .research-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 1.6rem 1.8rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .research-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(61,107,228,0.07);
+    }
+
+    .research-tag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .research-card h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .research-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── CV ── */
+    .cv-section + .cv-section { margin-top: 2.4rem; }
+
+    .cv-section-title {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .cv-entry { display: flex; gap: 1.4rem; padding: 0.6rem 0; }
+
+    .cv-year {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      min-width: 60px;
+      padding-top: 0.15rem;
+    }
+
+    .cv-entry-body { flex: 1; }
+
+    .cv-entry-body strong {
+      font-size: 0.92rem;
+      font-weight: 500;
+      display: block;
+    }
+
+    .cv-entry-body span {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .cv-download {
+      margin-top: 2rem;
+    }
+
+    /* ── Contact ── */
+    .contact-intro {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 480px;
+    }
+
+    .contact-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 0.9rem;
+      transition: all 0.18s;
+    }
+
+    .contact-item:hover { border-color: var(--accent); color: var(--accent); }
+
+    .contact-icon {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      min-width: 28px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      padding: 2rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .about-sidebar { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+      .avatar-placeholder { width: 100px; height: 100px; font-size: 0.6rem; }
+      .nav-links { gap: 1.2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      canvas#particles { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="#hero" class="nav-name">your.name</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#cv">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <canvas id="particles"></canvas>
+  <div class="hero-content">
+    <p class="hero-label">Physics · [Your University]</p>
+    <h1>Hi, I'm<br><em>Your Name</em></h1>
+    <p class="hero-bio">
+      PhD student in [your subfield, e.g. condensed matter / high-energy / astrophysics]. 
+      I study [one sentence on what you work on]. Advised by [Advisor Name].
+    </p>
+    <div class="hero-links">
+      <a href="#research" class="btn btn-primary">See my research</a>
+      <a href="#cv" class="btn btn-ghost">Download CV</a>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <p class="section-label">About</p>
+  <h2>Who I am</h2>
+  <hr class="section-rule">
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I'm a [year, e.g. third-year] PhD student in the Department of Physics at [University]. 
+        My research focuses on [brief description]. Before coming here, I completed my undergraduate 
+        degree in Physics at [Undergrad University].
+      </p>
+      <p>
+        Outside the lab, I [hobby/interest]. I'm always happy to chat about [topic] — feel free to reach out.
+      </p>
+    </div>
+    <div class="about-sidebar">
+      <div class="avatar-placeholder">your<br>photo<br>here</div>
+      <ul class="info-list">
+        <li><span>⚛</span><span>[Your Subfield]</span></li>
+        <li><span>📍</span><span>[City, State]</span></li>
+        <li><span>🎓</span><span>[University]</span></li>
+        <li><span>📅</span><span>Since [year]</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Research -->
+<section id="research">
+  <p class="section-label">Research</p>
+  <h2>What I work on</h2>
+  <hr class="section-rule">
+  <div class="research-list">
+
+    <div class="research-card">
+      <p class="research-tag">Current Project</p>
+      <h3>Title of your main project</h3>
+      <p>Brief description of this project — what you're studying, why it matters, and what methods you use. 2–3 sentences is plenty.</p>
+    </div>
+
+    <div class="research-card">
+      <p class="research-tag">Collaboration</p>
+      <h3>Title of a second project or collaboration</h3>
+      <p>Brief description. You can include a link to a paper or preprint if you have one.</p>
+    </div>
+
+    <div class="research-card">
+      <p class="research-tag">Past Work</p>
+      <h3>Undergrad thesis or previous project</h3>
+      <p>A short description of what you worked on before grad school, if relevant.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CV -->
+<section id="cv">
+  <p class="section-label">CV</p>
+  <h2>Curriculum Vitae</h2>
+  <hr class="section-rule">
+
+  <div class="cv-section">
+    <p class="cv-section-title">Education</p>
+    <div class="cv-entry">
+      <span class="cv-year">2022–</span>
+      <div class="cv-entry-body">
+        <strong>PhD in Physics</strong>
+        <span>[University], advised by [Advisor Name]</span>
+      </div>
+    </div>
+    <div class="cv-entry">
+      <span class="cv-year">2018–22</span>
+      <div class="cv-entry-body">
+        <strong>B.S. in Physics</strong>
+        <span>[Undergrad University] — [Honors, if any]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-section">
+    <p class="cv-section-title">Publications & Preprints</p>
+    <div class="cv-entry">
+      <span class="cv-year">2024</span>
+      <div class="cv-entry-body">
+        <strong>Your Paper Title</strong>
+        <span>Your Name et al. · <em>Journal Name</em> or arXiv:XXXX.XXXXX</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-section">
+    <p class="cv-section-title">Awards & Fellowships</p>
+    <div class="cv-entry">
+      <span class="cv-year">2023</span>
+      <div class="cv-entry-body">
+        <strong>Fellowship / Award Name</strong>
+        <span>[Granting organization]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-download">
+    <a href="cv.pdf" class="btn btn-ghost">↓ Download full CV (PDF)</a>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2>Get in touch</h2>
+  <hr class="section-rule">
+  <p class="contact-intro">
+    I'm happy to hear from prospective collaborators, students, or anyone curious about my work.
+  </p>
+  <div class="contact-grid">
+    <a href="mailto:you@university.edu" class="contact-item">
+      <span class="contact-icon">@</span>
+      <span>you@university.edu</span>
+    </a>
+    <a href="https://github.com/yourusername" target="_blank" class="contact-item">
+      <span class="contact-icon">gh</span>
+      <span>github.com/yourusername</span>
+    </a>
+    <a href="https://scholar.google.com" target="_blank" class="contact-item">
+      <span class="contact-icon">gs</span>
+      <span>Google Scholar</span>
+    </a>
+    <a href="https://arxiv.org" target="_blank" class="contact-item">
+      <span class="contact-icon">ar</span>
+      <span>arXiv profile</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>Built with GitHub Pages · © 2026 Your Name</p>
+</footer>
+
+<!-- Particle canvas animation -->
+<script>
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles;
+
+  function resize(){
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeParticles(n){
+    return Array.from({length: n}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+    }));
+  }
+
+  function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    for(let i = 0; i < particles.length; i++){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0) p.x = W;
+      if(p.x > W) p.x = 0;
+      if(p.y < 0) p.y = H;
+      if(p.y > H) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#3d6be4';
+      ctx.fill();
+
+      for(let j = i + 1; j < particles.length; j++){
+        const d = dist(p, particles[j]);
+        if(d < 120){
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(61,107,228,${0.15 * (1 - d/120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', ()=>{ resize(); particles = makeParticles(60); });
+  resize();
+  particles = makeParticles(60);
+  draw();
+})();
+</script>
+
+</body>
+</html>
